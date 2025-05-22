@@ -1,9 +1,9 @@
-package org.hierax.hierax
+package com.github.hierax
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ComposeAppCommonTest {
+class ComposeAppDesktopTest {
 
     @Test
     fun example() {

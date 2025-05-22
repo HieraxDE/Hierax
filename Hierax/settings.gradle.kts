@@ -1,4 +1,4 @@
-rootProject.name = "hierax"
+rootProject.name = "Hierax"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -25,6 +25,9 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+
+        maven { url = uri("https://jitpack.io") }
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 

@@ -1,4 +1,4 @@
-package org.hierax.hierax.icons
+package com.github.hierax.icons
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 
-public val playIcon: ImageVector
+val playIcon: ImageVector
     get() {
         if (_playIcon != null) {
             return _playIcon!!
