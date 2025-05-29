@@ -1,22 +1,38 @@
-package com.github.hierax
-
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.hierax.icons.playIcon
-import com.github.hierax.widgets.FileChooser
-import com.github.hierax.widgets.TextWithTab
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import app.widgets.DEFAULT_CODE
+import app.widgets.FileChooser
+import app.widgets.Ide
+//import app.App
+import java.awt.Dimension
 import java.io.File
+
 
 sealed class Screen {
     object Welcome : Screen()
-    data class Editor(val projectPath: File) : Screen()
+    data class Editor(val code: String) : Screen()
 }
+
 
 @Composable
 fun App() {
@@ -29,26 +45,20 @@ fun App() {
                 "/Users/bob/Projects/sus/build.gradle.kts",
                 "/Users/bob/Projects/ses/build.gradle.kts"
             ),
-            onOpenProject = { path -> currentScreen = Screen.Editor(path) },
-            onOpenFromFolder = { path -> currentScreen = Screen.Editor(path) }
+            onOpenProject = { code -> currentScreen = Screen.Editor(code) },
         )
 
-        is Screen.Editor -> EditorScreen(
-            projectPath = screen.projectPath,
-            onRun = { println("Run project: ${screen.projectPath}") }
-        )
+        is Screen.Editor -> Ide(screen.code)
     }
 }
-
 
 @Composable
 fun WelcomeScreen(
     recentProjects: List<String>,
-    onOpenProject: (File) -> Unit,
-    onOpenFromFolder: (File) -> Unit
+    onOpenProject: (String) -> Unit,
 ) {
     var showFileDialog by remember { mutableStateOf(false) }
-    var selectedFile by remember { mutableStateOf<File?>(null) }
+    var selectedFile by remember { mutableStateOf<String>("") }
 
     MaterialTheme(colorScheme = darkColorScheme()) {
         Column(
@@ -66,7 +76,7 @@ fun WelcomeScreen(
                             .fillMaxWidth()
                             .clickable {
                                 println(File(".").absolutePath)
-                                onOpenProject(File("build.gradle.kts"))
+                                onOpenProject(DEFAULT_CODE)
                             }
                             .padding(8.dp)
                     )
@@ -78,7 +88,7 @@ fun WelcomeScreen(
                     Text("Open File")
                 }
 
-                selectedFile?.let {
+                selectedFile.let {
                     onOpenProject(it)
                 }
 
@@ -94,20 +104,14 @@ fun WelcomeScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EditorScreen(projectPath: File, onRun: () -> Unit) {
-    MaterialTheme(colorScheme = darkColorScheme()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            TopAppBar(
-                title = { Text("Editing: $projectPath") },
-                actions = {
-                    IconButton(onClick = onRun) {
-                        Icon(playIcon, contentDescription = "Run")
-                    }
-                }
-            )
-            TextWithTab(projectPath)
-        }
+
+fun main() = application {
+    Window(
+        title = "app",
+        state = rememberWindowState(width = 800.dp, height = 600.dp),
+        onCloseRequest = ::exitApplication,
+    ) {
+        window.minimumSize = Dimension(350, 600)
+        App()
     }
 }

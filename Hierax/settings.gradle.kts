@@ -1,38 +1,38 @@
-rootProject.name = "Hierax"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "hierax"
 
 pluginManagement {
     repositories {
         google {
-            mavenContent {
-                includeGroupAndSubgroups("androidx")
-                includeGroupAndSubgroups("com.android")
-                includeGroupAndSubgroups("com.google")
+            content { 
+              	includeGroupByRegex("com\\.android.*")
+              	includeGroupByRegex("com\\.google.*")
+              	includeGroupByRegex("androidx.*")
+              	includeGroupByRegex("android.*")
             }
         }
-        mavenCentral()
         gradlePluginPortal()
+        mavenCentral()
     }
 }
 
 dependencyResolutionManagement {
     repositories {
         google {
-            mavenContent {
-                includeGroupAndSubgroups("androidx")
-                includeGroupAndSubgroups("com.android")
-                includeGroupAndSubgroups("com.google")
+            content { 
+              	includeGroupByRegex("com\\.android.*")
+              	includeGroupByRegex("com\\.google.*")
+              	includeGroupByRegex("androidx.*")
+              	includeGroupByRegex("android.*")
             }
         }
         mavenCentral()
 
+        // for com.github.zahid4kh:deskit:1.2.0
         maven { url = uri("https://jitpack.io") }
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
+includeBuild("convention-plugins")
+include(":logic")
+include(":app:composeApp")
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-}
-
-include(":composeApp")

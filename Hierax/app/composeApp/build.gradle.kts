@@ -1,18 +1,26 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.multiplatform)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose)
 }
 
 kotlin {
-    jvm("desktop")
-    
+    jvm()
+    wasmJs() {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "app.js"
+            }
+        }
+        binaries.executable()
+    }
+
     sourceSets {
-        val desktopMain by getting
-        
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -20,32 +28,28 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-
+            api(compose.materialIconsExtended)
 
             implementation("com.github.zahid4kh:deskit:1.2.0")
 
+
+            implementation(project(":logic"))
         }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
-        desktopMain.dependencies {
+
+        jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing)
         }
+
     }
 }
 
-
 compose.desktop {
     application {
-        mainClass = "com.github.hierax.MainKt"
+        mainClass = "MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.github.hierax"
+            packageName = "app"
             packageVersion = "1.0.0"
         }
     }
