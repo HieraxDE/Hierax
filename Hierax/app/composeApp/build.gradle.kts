@@ -30,7 +30,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             api(compose.materialIconsExtended)
 
-            implementation("com.github.zahid4kh:deskit:1.2.0")
+            implementation ("io.github.bonede:tree-sitter:0.25.3")
+            implementation ("io.github.bonede:tree-sitter-kotlin:0.3.8.1")
 
 
             implementation(project(":logic"))
@@ -38,6 +39,11 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
+
+            implementation("com.github.zahid4kh:deskit:1.2.0")
+
+            implementation ("io.github.bonede:tree-sitter:0.25.3")
+            implementation ("io.github.bonede:tree-sitter-kotlin:0.3.8.1")
         }
 
     }
