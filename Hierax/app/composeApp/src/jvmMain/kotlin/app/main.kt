@@ -1,3 +1,5 @@
+package app
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +25,6 @@ import androidx.compose.ui.window.rememberWindowState
 import app.widgets.DEFAULT_CODE
 import app.widgets.FileChooser
 import app.widgets.Ide
-//import app.App
 import java.awt.Dimension
 import java.io.File
 
