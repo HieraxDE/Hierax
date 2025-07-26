@@ -36,7 +36,7 @@ fun IDECodeEditor() {
     var popupPosition by remember { mutableStateOf(IntOffset(0, 0)) }
     var textFieldPosition by remember { mutableStateOf(IntOffset(0, 0)) }
 
-    var textLayoutResult: MutableState<TextLayoutResult?> = remember { mutableStateOf(null) }
+    val textLayoutResult: MutableState<TextLayoutResult?> = remember { mutableStateOf(null) }
 
     val onTextLayout: (TextLayoutResult) -> Unit = {
         textLayoutResult.value = it
@@ -97,14 +97,14 @@ fun IDECodeEditor() {
                 val position = layoutCoordinates.positionInWindow()
                 textFieldPosition = IntOffset(position.x.roundToInt(), position.y.roundToInt())
             }.onPreviewKeyEvent { keyEvent: KeyEvent ->
-                println(keyEvent.key)
+//                println(keyEvent.key)
                 if (
                     keyEvent.isCtrlPressed &&
                     keyEvent.awtEventOrNull?.keyChar == ' '
                 ) {
                     showPopup = true
                     return@onPreviewKeyEvent true
-                } else if (showPopup && keyEvent.type == KeyEventType.KeyDown && keyEvent.key == Key.Spacebar) {
+                } else if (showPopup && keyEvent.type == KeyEventType.KeyDown && (keyEvent.key == Key.Spacebar || keyEvent.key == Key.Escape)) {
                     showPopup = false
 //                } else if (keyEvent.type != KeyEventType.KeyDown && keyEvent.awtEventOrNull?.keyChar == ' ') {
 //                    return@onPreviewKeyEvent true
