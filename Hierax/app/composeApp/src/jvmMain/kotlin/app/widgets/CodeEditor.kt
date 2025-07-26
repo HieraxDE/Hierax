@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.rememberTextFieldScrollState
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
@@ -15,6 +16,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontFamily
@@ -26,13 +32,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.rememberWindowState
 import androidx.compose.ui.window.application
 import app.KotlinSyntaxHighlighter
-//import generateHighlights
 import kotlinx.coroutines.flow.distinctUntilChanged
-import java.io.File
 
 @Composable
 fun LineNumberColumn(
@@ -101,6 +104,7 @@ class SyntaxHighlightingVisualTransformation(
     }
 }
 
+const val TAB_SIZE = 4
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -136,7 +140,7 @@ fun CodeEditor(
                 val offset = textFieldValue.selection.start.coerceIn(0, textFieldValue.text.length)
                 try {
                     layoutResult.getLineForOffset(offset)
-                } catch (e: IndexOutOfBoundsException) {
+                } catch (_: IndexOutOfBoundsException) {
                     textFieldValue.text.substring(0, offset.coerceAtMost(textFieldValue.text.length)).count { it == '\n' }
                 }
             } else {
@@ -157,12 +161,52 @@ fun CodeEditor(
         )
 
         Spacer(Modifier.width(8.dp))
-
         Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
             BasicTextField(
                 value = textFieldValue,
                 onValueChange = onValueChange,
-                modifier = codeEditorModifier,
+                modifier = codeEditorModifier.onPreviewKeyEvent { keyEvent ->
+//                    println("keycode = ${keyEvent.key.keyCode} key = ${keyEvent.key} type = ${keyEvent.type}")
+                    if (keyEvent.key == Key.Tab && keyEvent.type == KeyEventType.KeyDown) {
+                        val text = textFieldValue.text
+                        val selection = textFieldValue.selection
+                        val newText = text.replaceRange(selection.start, selection.end, " ".repeat(TAB_SIZE)) // TODO add settings with tab size in it
+                        val newCursorPosition = selection.start + TAB_SIZE
+
+                        onValueChange(
+                            textFieldValue.copy(
+                                text = newText,
+                                selection = TextRange(newCursorPosition)
+                            )
+                        )
+
+                        // true to prevent standard Tab behaviour
+                        true
+                    } else if (keyEvent.key == Key.Backspace && keyEvent.type == KeyEventType.KeyDown) {
+                        val text = textFieldValue.text
+                        val selection = textFieldValue.selection
+
+                        // nothing is selected, > tab size from beginning
+                        if (selection.start == selection.end && selection.start >= TAB_SIZE) {
+                            val start = selection.start
+                            val beforeCursor = text.substring(start - TAB_SIZE, start)
+                            if (beforeCursor == " ".repeat(TAB_SIZE)) {
+                                val newText = text.removeRange(start - TAB_SIZE, start)
+                                val newCursorPosition = start - TAB_SIZE
+                                onValueChange(
+                                    textFieldValue.copy(
+                                        text = newText,
+                                        selection = TextRange(newCursorPosition)
+                                    )
+                                )
+                                return@onPreviewKeyEvent true
+                            }
+                        }
+                        false
+                    } else {
+                        false
+                    }
+                },
                 textStyle = editorTextStyle,
                 cursorBrush = SolidColor(MaterialTheme.colors.primary),
                 scrollState = editorScrollState,
