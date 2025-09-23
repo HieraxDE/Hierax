@@ -22,7 +22,7 @@
       object Java: ProgrammingLanguage("java")
 
       object Go: ProgrammingLanguage("go")
-    }
+  }
   ```
 - open the `Hierax/app/composeApp/src/jvmMain/kotlin/app/language_protocol/CreateLanguageProtocol.kt` file.
 - add your logic for opening or executing your lsp binary to this function.
