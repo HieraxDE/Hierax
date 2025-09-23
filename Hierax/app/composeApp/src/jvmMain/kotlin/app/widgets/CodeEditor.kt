@@ -5,9 +5,9 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.rememberTextFieldScrollState
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,8 +41,8 @@ fun LineNumberColumn(
     lineNumberScrollState: ScrollState,
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
-    lineNumberColor: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.4f),
-    lineNumberBackgroundColor: Color = MaterialTheme.colors.surface.copy(alpha = 0.2f)
+    lineNumberColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+    lineNumberBackgroundColor: Color = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
 ) {
     val density = LocalDensity.current
     val textMeasurer = rememberTextMeasurer()
@@ -110,10 +111,11 @@ fun CodeEditor(
     modifier: Modifier = Modifier,
     codeEditorModifier: Modifier = Modifier.fillMaxSize(),
     textLayoutResultState: MutableState<TextLayoutResult?> = remember { mutableStateOf(null) },
-    highlightColor: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f),
+    highlightColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
     editorTextStyle: TextStyle = LocalTextStyle.current.copy(
-        color = MaterialTheme.colors.onSurface,
-        fontFamily = FontFamily.Monospace
+        color = MaterialTheme.colorScheme.onSurface,
+        fontFamily = FontFamily.Monospace,
+        lineBreak = LineBreak.Simple
     ),
     highlightRanges: List<Pair<IntRange, Color>> = emptyList()
 ) {
@@ -162,9 +164,9 @@ fun CodeEditor(
             BasicTextField(
                 value = textFieldValue,
                 onValueChange = onValueChange,
-                modifier = codeEditorModifier,
+                modifier = codeEditorModifier.horizontalScroll(rememberScrollState()),
                 textStyle = editorTextStyle,
-                cursorBrush = SolidColor(MaterialTheme.colors.primary),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 scrollState = editorScrollState,
                 onTextLayout = { textLayoutResult ->
                     textLayoutResultState.value = textLayoutResult
@@ -221,7 +223,7 @@ fun Ide(code: String) {
     }
 
     MaterialTheme {
-        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             CodeEditor(
                 textFieldValue = textState,
                 onValueChange = { textState = it },
@@ -230,7 +232,7 @@ fun Ide(code: String) {
                 remember { mutableStateOf(null) },
                 highlightColor = Color.Yellow.copy(alpha = 0.2f),
                 editorTextStyle = LocalTextStyle.current.copy(
-                    color = MaterialTheme.colors.onSurface,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = FontFamily.Monospace,
                     fontSize = 11.sp
                 ),

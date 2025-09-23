@@ -66,7 +66,7 @@ fun MultiSplitPaneLayout(
     minPaneSize: Dp = 40.dp,
     panes: List<@Composable () -> Unit>
 ) {
-    require(panes.size >= 2) { "MultiSplitPaneLayout requires at least two panes." }
+//    require(panes.size >= 2) { "MultiSplitPaneLayout requires at least two panes." }
 
     val paneSizes = remember { mutableStateListOf<Dp>() }
     val density = LocalDensity.current

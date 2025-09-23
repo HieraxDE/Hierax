@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import hierax.getFibonacciNumbers
 
 @Composable
-fun App() {
+fun App3() {
     Box(
         modifier = Modifier.fillMaxSize().background(Color.White),
         contentAlignment = Alignment.Center

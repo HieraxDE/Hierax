@@ -30,9 +30,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             api(compose.materialIconsExtended)
 
-            implementation ("io.github.bonede:tree-sitter:0.25.3")
-            implementation ("io.github.bonede:tree-sitter-kotlin:0.3.8.1")
-
 
             implementation(project(":logic"))
         }
@@ -44,6 +41,9 @@ kotlin {
 
             implementation ("io.github.bonede:tree-sitter:0.25.3")
             implementation ("io.github.bonede:tree-sitter-kotlin:0.3.8.1")
+
+            implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.21.1")
+            implementation("org.eclipse.lsp4j:org.eclipse.lsp4j.jsonrpc:0.21.1")
         }
 
     }
